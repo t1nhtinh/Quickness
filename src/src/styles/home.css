@@ -1,0 +1,468 @@
+﻿/**
+
+    https://code.tutsplus.com/tutorials/30-css-best-practices-for-beginners--net-6741 
+    Good CSS practices 
+    1) css reset: allows layout to be consistent in all browsers 
+    2) organize top-down structure 
+        a. generic classes (body, a, p, h1)
+        b. header 
+        c. nav-menu 
+        d. main-content 
+    3) combine elements 
+    4) create HTML first 
+    5) use multiple classes 
+    6) add comments
+    7) block elements: div, h1...h6, p, ul, li, table, blockquote, pre, form 
+    8) inline or block elements: span, a, strong, em, img, br, input, abbr, acronym 
+    9) alphabetize properties 
+    10) css compress 
+    11) to center layouts use margin: 0 auto //top, btm- and left, right values respectively 
+    12) use absolute sparingly 
+    13) use text-transform 
+    14) use ems over pixels to specify font size due to its scalabilty 
+    15) Add margins and paddings to all // * { margin: 0; padding: 0}
+*/
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+   /* background: url("../images/background.png");*/
+}
+
+/*  Heading
+    1)http://jsfiddle.net/CH9K8/6419/
+    2) https://css-tricks.com/almanac/properties/w/width/
+    3)https://stackoverflow.com/questions/38948102/center-and-right-align-flexbox-elements
+*/
+
+.header {
+    width: 100%;
+    border-bottom-style: solid;
+    border-bottom-color: black;
+    overflow: auto;
+   padding: 0;
+    margin: 10px auto;
+
+}
+
+/*Center title of page */
+.title {
+    display: inline-block;
+    margin-bottom: 0; 
+    text-align: center;
+
+}
+
+/*Make menu_login float right */
+.menu_login_container {
+    position: relative;
+    float: right;
+    width: 450px;
+    background-color: rgba(0,0,0,0.09);
+    height: 25%;
+    border-radius: 10px;
+    padding: 10px 10px; 
+   overflow: auto;
+
+}
+.login_form table td tr th{
+    background-color: none;
+    position: inherit; 
+    overflow: auto;
+}
+
+
+.dummy_container{
+    float: left;
+    background-color: rgba(0,0,0,0.5);
+    width: 450px;
+    height: 1px; 
+    overflow:auto;
+    visibility:hidden; 
+
+}
+
+
+
+/* Slide Show w/out JS*/
+.carousel {
+    position: relative;
+    /*box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.64); */
+    margin: auto;
+    width: 90%;
+    height: 40vw;
+    overflow: hidden;
+  
+}
+
+.carousel-inner {
+    position: inherit;
+    margin: auto;
+    width: 90%;
+    height: 40vw;
+    overflow: hidden;
+
+   
+}
+
+.carousel-open:checked + .carousel-item {
+    position: static;
+    opacity: 100;
+    align-self: center;
+    margin: auto;
+
+}
+
+.carousel-item {
+    position: absolute;
+    opacity: 0;
+    -webkit-transition: opacity 0.6s ease-out;
+    transition: opacity 0.6s ease-out;
+   
+}
+
+.carousel-item img {
+       display: block;
+       height: auto;
+       width: 100%;
+ }
+
+
+.card_info {
+    position: absolute;
+    top:20%;
+    right: 20%; 
+    background-color: rgba(255,255,255,0.8);
+    padding:10px 10px;
+    width:20%;
+    height: 40%;
+    overflow:auto;
+    border-radius: 10px;  
+}
+
+/*TODO Make LearnMore italics*/
+.card_info a {
+    position: absolute;
+    background-color: #428bca;
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    padding: 5px;
+    margin: auto;
+    border-radius: 10px;
+}
+
+
+.package_grid {
+    background-color: rgba(255,255,255,0.8);
+    border: 1px solid black;
+    position: absolute;
+    top: 20%;
+    right: 30%;
+    width: 30%;
+    height: 60%;
+
+}
+
+.package_grid > div {
+    
+    display:inline-block;  
+    align-content:space-around;
+    background-color: rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border: 1px solid black;
+    width:30%;
+    height:25%;
+    margin: 10px 10px;
+   
+}
+
+
+
+
+
+
+
+.carousel-control {
+    background: rgba(0, 0, 0, 0.28);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    display: none;
+    font-size: 40px;
+    height: 40px;
+    line-height: 35px;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translate(0, -50%);
+    cursor: pointer;
+    -ms-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+    text-align: center;
+    width: 40px;
+    z-index: 10;
+}
+
+    .carousel-control.prev {
+        left: 2%;
+    }
+
+    .carousel-control.next {
+        right: 2%;
+    }
+
+    .carousel-control:hover {
+        background: rgba(0, 0, 0, 0.8);
+        color: #aaaaaa;
+    }
+
+
+#carousel-1:checked ~ .control-1,
+#carousel-2:checked ~ .control-2,
+#carousel-3:checked ~ .control-3, 
+#carousel-4:checked ~ .control-4,
+#carousel-5:checked ~ .control-5 {
+    display: block
+}
+
+.carousel-indicators {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 2%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+}
+
+.carousel-indicators li {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.carousel-bullet {
+    color: #fff;
+    cursor: pointer;
+    display: block;
+    font-size: 35px;
+}
+
+.carousel-bullet:hover {
+    color: #aaaaaa;
+}
+
+ /*hashtag gets id*/
+#carousel-1:checked ~ .control-1 ~ .carousel-indicators li:nth-child(1) .carousel-bullet,
+#carousel-2:checked ~ .control-2 ~ .carousel-indicators li:nth-child(2) .carousel-bullet,
+#carousel-3:checked ~ .control-3 ~ .carousel-indicators li:nth-child(3) .carousel-bullet,
+#carousel-4:checked ~ .control-4 ~ .carousel-indicators li:nth-child(4) .carousel-bullet, 
+#carousel-5:checked ~ .control-5 ~ .carousel-indicators li:nth-child(5) .carousel-bullet {
+    color: #428bca
+}
+
+
+/* Slideshow container */
+.slideshow-container {
+    max-width: 1000px;
+    position: relative;
+    margin: auto;
+  }
+  
+  /* Next & previous buttons */
+  .prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+  }
+  
+  /* Position the "next button" to the right */
+  .next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+  }
+  
+  /* On hover, add a black background color with a little bit see-through */
+  .prev:hover, .next:hover {
+    background-color: rgba(0,0,0,0.8);
+  }
+  
+  /* Caption text */
+  .text {
+    color: #f2f2f2;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  /* Number text (1/3 etc) */
+  .numbertext {
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+  }
+  
+  /* The dots/bullets/indicators */
+  .dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+  }
+  
+  .active, .dot:hover {
+    background-color: #717171;
+  }
+  
+  /* Fading animation */
+  .fade {
+    -webkit-animation-name: fade;
+    -webkit-animation-duration: 1.5s;
+    animation-name: fade;
+    animation-duration: 1.5s;
+  }
+  
+  @-webkit-keyframes fade {
+    from {opacity: .4} 
+    to {opacity: 1}
+  }
+  
+  @keyframes fade {
+    from {opacity: .4} 
+    to {opacity: 1}
+  }
+  
+  /* On smaller screens, decrease text size */
+  @media only screen and (max-width: 300px) {
+    .prev, .next,.text {font-size: 11px}
+  }
+
+.row {
+    /*content: "";
+    display: table;
+    clear: both;*/
+    margin-top: 10px;
+    padding-top: 20px;
+
+    border-top-style: solid;
+    border-top-width: 4px;
+    border-top-color: black;
+    text-align: center;
+
+    background-color: white; 
+
+}
+
+.left_column {
+    background-color: white;
+    float: left;
+    height: auto;
+    padding: 20px;
+    width: 50%;
+    margin-left:10%;
+
+}
+
+/*#f1f1f1*/
+.right_column {
+    background-color: white;
+    float: left;
+    height: auto;
+    padding: 20px;
+    width: 20%;
+    margin-right: 10%;
+    border: 1px solid black;
+    margin-top: 20px;
+}
+
+
+
+.card {
+    background-color: rgba(0, 173, 248, 0.1);
+    padding: 10px;
+
+}
+
+.card_left {
+    background-color: rgba(241, 241, 241, 1);
+    padding: 10px 10px;
+    text-align: left;
+    overflow: auto;
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+    border-radius: 15px; 
+
+
+}
+
+.card_left img {
+    width: 25%;
+    height: 25%;
+    float: left;
+    border-radius: 15px;
+
+}
+
+.card_right {
+    background-color: rgba(0, 173, 248, 0.1);
+    padding: 10px 10px;
+    text-align: right;
+    overflow: auto;
+    border-radius: 15px;
+
+}
+
+.card_right img {
+    width: 25%;
+    height: 25%;
+    float: right; 
+    border-radius: 15px;
+}
+
+
+
+@media (max-width: 800px) {
+    .left_column, .right_column {
+        width: 100%;
+        margin: auto;
+    }
+
+    .card_info {
+        overflow-y: scroll
+    }
+
+    .card_info a {
+        display: none
+    }
+
+    .card_info2 a {
+        display: none
+    }
+
+    .header_title img {
+        padding: inherit;
+        margin: inherit;
+    }
+}
