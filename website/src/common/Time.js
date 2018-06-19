@@ -1,6 +1,6 @@
 import React from 'react';
 
-const WaitTime =  () => {
+const Time =  () => {
     
     return (
         <div> 
@@ -10,4 +10,4 @@ const WaitTime =  () => {
 
 };
 
-export default WaitTime;
+export default Time;

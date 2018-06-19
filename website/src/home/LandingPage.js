@@ -17,7 +17,7 @@ class LandingPage extends React.Component {
     return (
         <div> 
             <div className="header">
-                <img src={wallPaper} alt="wood desk" style={{'width':'100%'}}/>             
+                <img src={wallPaper} alt="wood desk" style={{'width':'100%' ,'height':'100%'}}/>             
 
                 <div className="main_content">
                     <h4>Manage long lines. Optimize your business. Minimize wait times. </h4>
