@@ -5,6 +5,7 @@ import Header from './common/Header'
 import {Route} from 'react-router-dom';
 import LandingPage from './home/LandingPage';
 import ClientPage from './client/ClientPage';
+import fire from './fire';
 
 class App extends Component {
   render() {

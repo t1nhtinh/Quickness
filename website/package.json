@@ -2,8 +2,8 @@
   "name": "website",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://t1nhtinh.github.io/Quickness",
   "dependencies": {
+    "firebase": "^5.2.0",
     "gh-pages": "^1.1.0",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
@@ -16,7 +16,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "firebase deploy",
     "eject": "react-scripts eject"
   }
 }

@@ -1,3 +1,6 @@
+body{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
 
 .header {
     position: relative;
@@ -6,8 +9,21 @@
 
 .main_content {
     position: absolute;
-    top: 25%;
-    left: 25%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     color: white;
+}
+
+.start-button {
+    color: black;
+    text-align: center;
+    padding: 8px 12px;
+    background-color: rgb(255,255,255, 0.5); 
+    text-decoration: none; 
+}
+
+.start-button:hover {
+    background-color: black;
+    color: white; 
 }

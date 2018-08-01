@@ -27,8 +27,8 @@ class ClientPage extends React.Component {
      constructor(props,context) {
         super(props,context);
         this.state = {
-          guests: {}, 
-          providers: employees, //set dummy employees sorted by alphabet
+          guests: [], 
+          providers: employees, //set dummy employees TODO: sorted by alphabet
           empty: true,
           providerType: "Employees",
           numInLine:0,
@@ -42,6 +42,7 @@ class ClientPage extends React.Component {
           waitTimes: [],
           minStartTime: 0,
           estimatedFinishTimes: [], 
+          settingDisplay: "none"
         }
 
         this.addGuest = this.addGuest.bind(this);
@@ -55,6 +56,9 @@ class ClientPage extends React.Component {
         this.updateNumberOfOpenProviders = this.updateNumberOfOpenProviders.bind(this);
         this.calcFinishTime = this.calcFinishTime.bind(this);
         this.calcWaitTime = this.calcWaitTime.bind(this);
+        this.moveGuest = this.moveGuest.bind(this);
+        this.setStatus = this.setStatus.bind(this); 
+        this.showContent = this.showContent.bind(this);
     }
 
   addGuest(){
@@ -67,10 +71,12 @@ class ClientPage extends React.Component {
     //update JSON for user   
     if(this.state.name){
        //add comment to user notes with most recent notes at the top
-       newGuests = [ ...this.state.guests, {name: this.state.name, number: this.state.number}];
-       empty = false; 
-       numOfGuests++; 
-       numInLine++; 
+      newGuests = [ ...this.state.guests, {name: this.state.name, number: this.state.number, index: numInLine, status: 'ready'} ];
+      console.log(newGuests);
+       
+      empty = false; 
+      numOfGuests++; 
+      numInLine++; 
     }
 
     this.setState({
@@ -82,6 +88,56 @@ class ClientPage extends React.Component {
         numInLine: numInLine,
         
     });
+  }
+
+  moveGuest(dir, index){
+    let guests = this.state.guests; 
+    if(guests.length < 1) return; 
+    
+    let tempGuest = guests[index];
+  
+    if(dir){//move up if true
+      if(index < 1){ return; }
+      let guest = guests[index - 1]; 
+      guests[index] = guest; 
+      guests[index - 1] = tempGuest; 
+
+      guests[index].index = index; 
+      guests[index - 1].index = index - 1; 
+    }
+    else{ //move down
+      if(index >= guests.length - 1){return; }
+      let guest = guests[index + 1]; 
+      guests[index] = guest; 
+      guests[index + 1] = tempGuest; 
+
+      guests[index].index = index; 
+      guests[index + 1].index = index + 1; 
+    }
+
+    this.setState({
+      guests: guests 
+    });
+  }
+
+  setStatus(num, index){
+    let status = "";
+    let guests = this.state.guests; 
+    
+    if(num == 0){
+      status = "ready";
+    } else if (num == 1){
+      status = "inProgress";
+    }else {
+      status = "done";
+    }
+
+    guests[index].status = status; 
+
+    this.setState({
+      guests: guests
+    });
+
   }
 
   getName(event){
@@ -124,7 +180,7 @@ class ClientPage extends React.Component {
 
   //Function to calculate the wait time depending on number of guests in line and number of open providers
   updateWaitTime(){  
-    
+    console.log(this.state.guests); 
     let waitTime = 0; //Initialize waitTime to zero
     let providers = this.state.providers;
     let processTime = this.state.processTime;
@@ -167,9 +223,7 @@ class ClientPage extends React.Component {
     let date = new Date(); 
      //get the time
     date = date.toString(); 
-
     date = new Date(date); 
-
     console.log(date);
 
     let testDate = new Date(2018, 3, 27, 18, 1); 
@@ -268,6 +322,21 @@ class ClientPage extends React.Component {
   //   });  
   }
 
+  //set the settings content to display or hidden 
+  showContent(){
+    let show = this.state.settingDisplay;
+   
+    if(show == "none"){
+      show = "block";
+    } 
+    else {
+      show = "none";
+    }
+    this.setState({
+      settingDisplay: show
+    });
+  }
+
   //Initialize the providers 
   //sort the providers by name and store
   //create keys and store them in openProviderList 
@@ -287,19 +356,29 @@ class ClientPage extends React.Component {
         <div className="upperRow">
           <div className="topNav">
             <Link to="/">Home</Link>
-            <a href="#">Settings </a>
-            <span> # of {this.state.providerType}: 
-              <input type="number" value={this.state.numOfProviders} onChange={this.handleNumOfProviders}/>|----</span>
-           
-            <span className="keyFeature">| In-Line: {this.state.numInLine} |----</span>
-            <span className="keyFeature"> Process Time: 
-              <input type="number" value={this.state.processTime} onChange={this.handleProcessTime}/> min |-----</span>
             
-            <span className="keyFeature" onClick={this.updateWaitTime}> Wait Time: {this.state.waitTime} ---|</span>
-    
-            <div>
+            <div className="dropdown">  
+              <div className="dropbtn" onClick={this.showContent}>Settings</div> 
+              
+              <div className="dropdown-content" style={{display: this.state.settingDisplay}}>
+                <div className="setting-column"> # of {this.state.providerType}: 
+                  <input type="number" value={this.state.numOfProviders} onChange={this.handleNumOfProviders}/>
 
+                  <br></br>
+                  <input type="text" placeHolder="type name "/>
+                  <input type="text" placeHolder="type employee id " />
+                  <button className="addBtn">+</button>
+
+                </div>                
+                
+                <div className="setting-column"> Process Time: 
+                  <input type="number" value={this.state.processTime} onChange={this.handleProcessTime}/>
+                </div>
+              </div>
             </div>
+            
+            <div className="wait-container">In-Line: {this.state.numInLine}</div>
+            <div className="wait-container" onClick={this.updateWaitTime}> Wait Time: {this.state.waitTime} </div>
           </div>
         </div>
         <div className="middleRow">
@@ -314,7 +393,7 @@ class ClientPage extends React.Component {
           </div>
         </div>
         <div className="bottomRow">
-          <GuestList guests={this.state.guests} isEmpty={this.state.empty} providers={this.state.providers}/>
+          <GuestList guests={this.state.guests} isEmpty={this.state.empty} providers={this.state.providers} onMove={this.moveGuest} setStatus={this.setStatus}/>
         </div>
       </div>
     );

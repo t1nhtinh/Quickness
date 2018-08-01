@@ -23,7 +23,7 @@ const GuestList = (props) => {
                     </tr>
                 </thead>
                 <tbody>                   
-                      {empty ? null : props.guests.map((guest, i) => <GuestListRow key={i} guest={guest} providers={props.providers}/>)}                
+                      {empty ? null : props.guests.map((guest, i) => <GuestListRow key={i} guest={guest} providers={props.providers} onMove={props.onMove} setStatus={props.setStatus}/>)}                
                 </tbody>
             </table>
         </div>
