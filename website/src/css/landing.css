@@ -5,6 +5,7 @@ body{
 .header {
     position: relative;
     text-align: center;
+    font-size: 4vw;
 }
 
 .main_content {
@@ -21,6 +22,7 @@ body{
     padding: 8px 12px;
     background-color: rgb(255,255,255, 0.5); 
     text-decoration: none; 
+    border-radius: 5px;
 }
 
 .start-button:hover {

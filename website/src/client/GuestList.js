@@ -16,14 +16,20 @@ const GuestList = (props) => {
             <table id="guestTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Number</th>
-                        <th>Employee</th>
-                        <th>Options</th>
+                        <th style={{width: "10%", textAlign: "center"}}>Status</th>
+                        <th style={{width: "20%"}}>Name</th>
+                        {/* <th>Number</th> */}
+                        <th style={{width: "10%"}}>Waiting</th>
+                        <th style={{width: "10%"}}>Quoted</th>
+                        <th style={{width: "10%"}}>Expert</th>
+                        
+                        <th style={{width: "10%", textAlign: "center"}}> Insoles Only </th>
+                        <th style={{width: "5%", textAlign: "center"}}> Done </th>
+                        <th style={{width: "5%", textAlign: "center" }}></th>
                     </tr>
                 </thead>
                 <tbody>                   
-                      {empty ? null : props.guests.map((guest, i) => <GuestListRow key={i} guest={guest} providers={props.providers} onMove={props.onMove} setStatus={props.setStatus}/>)}                
+                      {empty ? null : props.guests.map((guest, i) => <GuestListRow key={i} guest={guest} providers={props.providers} onMove={props.onMove} setStatus={props.setStatus} updateNumInLine={props.updateNumInLine} updateWaitedTime={props.updateWaitedTime}/>)}                
                 </tbody>
             </table>
         </div>

@@ -1,18 +1,24 @@
 import React from 'react';
 import ResourceList from './ResourceList';
+import WaitedTime from './WaitedTime';
+
 const GuestListRow = (props) => {
 //    console.log(props);
     let status = 0; 
     let color = "";
+    //let waitedTime = props.guest.waitedTime; 
 
-    if(props.guest.status == "ready"){
-        color = "green";
+    console.log(props);
+    if(props.guest.status === "ready"){
+        color = "#4be44b";
         status = 0; 
-    }else if(props.guest.status == "inProgress"){
+        //props.updateWaitedTime(props.guest.index);
+        
+    }else if(props.guest.status === "inProgress"){
         color = "yellow";
         status = 1; 
     }else {
-        color = "red";
+        color = "#ff5e00";
         status = 2; 
     }
 
@@ -29,26 +35,38 @@ const GuestListRow = (props) => {
     let setStatus = () => {
         status = (status + 1)%3; 
         props.setStatus(status, props.guest.index);  
+        props.updateNumInLine(); 
     }
 
     
     return(
-        <tr style={{backgroundColor: color}}>
+        <tr>
+            {/* <td> {props.guest.index} </td> */}
+            <td> <div style={{backgroundColor: color}} className="statusBtn" onClick={setStatus}></div> </td>
             <td> {props.guest.name} </td>
-            <td> {props.guest.index} </td>
+            {/* <td> {props.guest.index} </td> */}
+            {/* <td> {props.guest.waitedTime}<small>min </small> </td> */}
+            <WaitedTime guest={props.guest} updateWaitedTime={props.updateWaitedTime} index={props.guest.index}/>
+            <td> {props.guest.quoted} <small>min</small></td>
             <ResourceList providers={props.providers}/>
+
             <td> 
-                <table>
-                    <tbody>
-                        <tr>                          
-                            <td> <div className="optBtn" onClick={setStatus}>{props.guest.status}</div> </td>
-                            <td> <div className="optBtn" onClick={this.messageGuest}>M</div> </td>
-                            <td> <div className="optBtn" onClick={moveUp}>UP</div> </td>  
-                            <td> <div className="optBtn" onClick={moveDown}>DN</div> </td>                    
-                        </tr>
-                    </tbody>
-                </table>
+                <div className="checkBtn">
+                    <input type="checkBox"/>               
+                </div>
             </td>
+            <td> 
+                <div className="checkBtn">
+                    <input type="checkBox"/>               
+                </div>
+            </td>
+            <td style={{textAlign: "center"}}>                                                
+                {/* <td> <div className="optBtn" onClick={setStatus}>{props.guest.status}</div> </td> */}
+                {/* <div className="optBtn" onClick={this.messageGuest}>M</div>  */}
+                <div className="optBtn" onClick={moveUp}> <i className="up"></i> </div>  
+                <div className="optBtn" onClick={moveDown}> <i className="down"></i> </div>                                          
+            </td>
+            {/* <td> <div style={{backgroundColor: color}} className="checkBtn" onClick={setStatus}></div> </td> */}
         </tr>
                         
     );

@@ -17,7 +17,7 @@
 }
 
 /* Change color on hover */
-.topNav a:hover, .topNav div:hover {
+.topNav a:hover {
     background-color: #555;
     color: black; 
 }
@@ -33,20 +33,23 @@
     color: white;
     text-align: center;
     padding: 14px 16px;
-    background-color: black;
+    background-color: #6ba8c7;
     border-radius: 5px; 
+    margin: 0px 1px;
    
 }
 
 .topNav .wait-container:hover {
-    background-color: #555;
-    color: black; 
+    /* background-color: #555; */
+    /* color: black;  */
 }
 
 
 .topnav a:hover, .dropdown:hover .dropbtn {
-  background-color: #555;
-  color: white;
+  /* background-color: #555; */
+  color: black;
+  font-size: larger;
+  font-weight: bold;
 }
 
 /* Settings drop down content */
@@ -98,6 +101,7 @@
     text-decoration: none;
     display: block;
     text-align: left;
+    width: auto;
 }
 
 /* .dropdown-content div {
@@ -109,12 +113,12 @@
 } */
 
 .topnav a:hover, .dropdown:hover .dropbtn {
-  background-color: #555;
-  color: white;
+  /* background-color: #555; */
+  /* color: white; */
 }
 
 .dropdown-content div:hover {
-    background-color: #ddd;
+    /* background-color: #ddd; */
     color: black;
 }
 
@@ -126,12 +130,12 @@
 
 .upperRow {
     background-color: rgba(221, 221, 221, 0.367) ;
-    width: 90%;
-    margin: 10px auto; 
-    padding: 10px;
+    width: auto;
+    margin: 5px auto; 
+    padding: 5px;
     height: auto; 
     border-radius: 5px; 
-     border-radius: 5px; 
+     
 }
 
 /* rgb(46, 146, 176)  */
@@ -139,7 +143,7 @@
     background-color: rgba(53, 137, 179, 0.737) ;
     height: 50px;
     padding: 10px 10px;
-    width: 90%;
+    width: auto;
     margin:  0px auto;
     border-radius: 5px; 
  
@@ -151,8 +155,8 @@
     background-color: rgba(207, 234, 242, 0.668);
     height: auto;
     max-height: 70vh; 
-    padding: 10px 10px;
-    width: 90%; 
+    padding: 5px 5px;
+    width: auto; 
     margin:  auto;
     border-radius: 5px; 
     
@@ -183,17 +187,48 @@
 }
 
 .optBtn {
-    padding: 10px;
-    width: 50%;
-    background: none; 
-    color: rgb(0, 0, 0);
+
+    margin: 0 5px; 
     text-align: center;
-    font-size: medium;
+    /* font-size: medium; */
     cursor: pointer;
     transition: 0.3s;
-    border: black 1px solid; 
+    /* border: black 1px solid;  */
+    overflow-y: scroll;
+    display: inline;
 }
 
+.statusBtn {
+    border-radius: 50%;
+    cursor: pointer;   
+    height: 25px;
+    margin: auto;
+    width: 25px;
+    
+}
+
+.checkBtn {
+    cursor: pointer;   
+    margin: auto;
+    width: 25px;   
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+i {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+  }
 
 /*rgba(182, 187, 191, 0.1)*/
 .card {
@@ -204,7 +239,7 @@
     border-top-width: 5px;
     border-top-color: #2196F3;
     overflow:auto;
-    word-wrap: break-word;
+    /* word-wrap: break-word; */
 }
 
 
@@ -216,7 +251,7 @@
     max-height: 70vh; 
     overflow: auto;
     border-bottom: 10px;
-    word-wrap: break-word;
+    /* word-wrap: break-word; */
     border-radius: 5px; 
 }
 
@@ -224,32 +259,38 @@
     border-collapse: collapse;
     width: 100%;
     border:none;
- 
+    table-layout: fixed;
     height: 100%;
 }
 
-.guestList th {
-    background-color: rgba(0,0,0, 0.2);
-    text-align: left;
-    width: auto;
-    padding: 10px;
-    font-size: large;
+.guestList table tr {
+    overflow: hidden;
 }
+
+.guestList th {
+    background-color: #f2f2f2;
+    text-align: left;
+    padding: 5px;
+    font-size: small;
+    overflow-y: scroll;
+}
+
 
 .guestList td {
     text-align: left;
-    font-size: large;
-   
+    /* font-size: large; */
+    height: 10%;
+    overflow-y: scroll;
+    /* text-overflow: ellipsis; */
 }
 
 .guestList td,th{
-   
    padding: 5px; 
 }
 
-.guestList  tr:nth-child(even)  {
+/* .guestList  tr:nth-child(even)  {
     background-color: #f2f2f2;
-}
+} */
 
 
 
@@ -292,11 +333,22 @@
 @media screen and (max-width: 900px) {
 
     .topNav a, .topNav .wait-container,  .topNav .dropdown,  .topNav .dropdown .dropbtn {
-        float: none;
-        display: block;
+        /* float: none; */
+        /* display: block; */
         text-align: center;
-        margin: 0;
+        margin: 0; 
         
+    }
+
+    .topNav .wait-container{
+        /* width: 100%;  */
+        padding: 14px 14px;
+        margin: 0px 1px;
+        
+    }
+
+    .dropdown-content{
+        margin-top: 5%;
     }
 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import '../css/landing.css';
-import wallPaper from '../images/woodCoffee.jpg';
+import wallPaper from '../images/stars.jpg';
 import {Link} from 'react-router-dom';
 
 class LandingPage extends React.Component {
