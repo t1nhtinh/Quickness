@@ -80,7 +80,7 @@ class ClientPage extends React.Component {
     //startTime = finishTime; 
     //check if    
     if(this.state.name){
-      newGuests = [ ...newGuests, {name: this.state.name, number: this.state.number, index: numInLine, status: 'ready', quoted: waitTime, startTime: startTime, waitedTime: 0 } ];
+      newGuests = [ ...newGuests, {name: this.state.name, number: this.state.number, index: numOfGuests, status: 'ready', quoted: waitTime, startTime: startTime, waitedTime: 0 } ];
       console.log(newGuests);
        
       empty = false; 
@@ -131,9 +131,9 @@ class ClientPage extends React.Component {
   setStatus(num, index){
     let status = "";
     let guests = this.state.guests;  
-    if(num == 0){
+    if(num === 0){
       status = "ready";
-    } else if (num == 1){
+    } else if (num === 1){
       status = "inProgress";
     }else {
       status = "done";
@@ -238,7 +238,7 @@ class ClientPage extends React.Component {
     let numInLine = 0; 
     //count how many are in the ready state
     for(i = 0; i < guests.length; i++){
-      if(guests[i].status == "ready"){
+      if(guests[i].status === "ready"){
         numInLine++; 
       }
     }
@@ -251,10 +251,13 @@ class ClientPage extends React.Component {
 
   //Function to calculate the wait time depending on number of guests in line and number of open providers
   updateWaitTime(){  
-    console.log(this.state.guests); 
+    
+    //console.log(this.state.guests); 
     let waitTime = 0; //Initialize waitTime to zero
     let providers = this.state.providers;
     let processTime = this.state.processTime;
+
+    if(processTime < 5) {return; }
     //update the number of open Providers
     //this.updateNumberOfOpenProviders(); 
     let numOfOpenProv = this.state.openProviders; 
@@ -295,7 +298,7 @@ class ClientPage extends React.Component {
     let currTime = new Date();
     var waitedTime; 
 
-    if(guests[index].status == "ready"){
+    if(guests[index].status === "ready"){
       let startTime = guests[index].startTime; 
       waitedTime = new Date(currTime - startTime); 
       guests[index].waitedTime = waitedTime.getMinutes(); 
@@ -399,7 +402,7 @@ class ClientPage extends React.Component {
   showContent(){
     let show = this.state.settingDisplay;
    
-    if(show == "none"){
+    if(show === "none"){
       show = "block";
     } 
     else {
@@ -451,9 +454,11 @@ class ClientPage extends React.Component {
               </div>
             </div>
             
-            <div className="wait-container">In-Line: {this.state.numInLine}</div>
+           <div className="analytic-cont">
             {/* <div className="wait-container" onClick={this.updateWaitTime}> Wait Time: {this.state.waitTime} </div> */}
-            <WaitTime update={this.updateWaitTime} waitTime={this.state.waitTime}/>
+            <WaitTime update={this.updateWaitTime} waitTime={this.state.waitTime} proccessTime={this.state.processTime}/>
+            <div className="wait-container inline-cont">In-Line: {this.state.numInLine}</div>
+            </div>
           </div>
         </div>
         <div className="middleRow">

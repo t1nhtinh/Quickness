@@ -20,7 +20,7 @@ class WaitTime extends React.Component {
         //console.log(this.props);
         //console.log("time: ", this.state.seconds )
       return (
-        <div className="wait-container" onClick={this.props.update}> Wait Time: {this.props.waitTime} </div>
+        <div className="wait-container waitTime-cont" onClick={this.props.update}> Wait Time: {this.props.waitTime} </div>
       );
     }
   }

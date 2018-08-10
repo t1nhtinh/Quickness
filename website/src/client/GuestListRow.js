@@ -8,7 +8,7 @@ const GuestListRow = (props) => {
     let color = "";
     //let waitedTime = props.guest.waitedTime; 
 
-    console.log(props);
+    //console.log(props);
     if(props.guest.status === "ready"){
         color = "#4be44b";
         status = 0; 
@@ -18,7 +18,7 @@ const GuestListRow = (props) => {
         color = "yellow";
         status = 1; 
     }else {
-        color = "#ff5e00";
+        color = "#ff2300d9";
         status = 2; 
     }
 

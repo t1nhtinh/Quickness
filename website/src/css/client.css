@@ -1,4 +1,5 @@
 /* Style the top navigation bar #e9e9e9 */
+
 .topNav {
     overflow: hidden;
     background-color: rgba(255, 255, 255 , 0.5);
@@ -29,7 +30,7 @@
 }
 
 .topNav .wait-container {
-    float: right;
+   
     color: white;
     text-align: center;
     padding: 14px 16px;
@@ -39,11 +40,20 @@
    
 }
 
-.topNav .wait-container:hover {
-    /* background-color: #555; */
-    /* color: black;  */
+.inline-cont{
+    float: left;
+}
+.waitTime-cont{
+    float:right;
 }
 
+
+.analytic-cont {
+    display: block;
+    /* background-color: red; */
+    width: auto; 
+    float: right; 
+}
 
 .topnav a:hover, .dropdown:hover .dropbtn {
   /* background-color: #555; */
@@ -171,6 +181,7 @@
   width: 90%;
   padding: 10px;
   font-size: medium;
+  border-radius: 5px
 }
 
 /* Style the "Add" button */
@@ -321,7 +332,32 @@ i {
 }
 
 
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+
+@media (max-width: 500px) {
+    .topNav .wait-container{
+            /* //width: 100%;  */
+            /* float: none; */
+            display: block;
+            /* clear: both; */
+            width: 25%;
+            
+    }
+    
+    .inline-cont {
+        /* clear: left; */
+        float: right; 
+    }
+
+    .waitTime-cont{
+        float: left; 
+    }
+
+    .analytic-cont {
+        width: 100%;
+    }
+
+}
+
 @media (max-width: 800px) {
     .upperRow, .bottomRow, .middleRow {
         width: auto;
