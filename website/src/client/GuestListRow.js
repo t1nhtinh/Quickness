@@ -6,15 +6,16 @@ const GuestListRow = (props) => {
     //console.log(props);
     let status = 0; 
     let color = "";
-    //let waitedTime = props.guest.waitedTime; 
+    
+    let isDone = props.guest.isDone; 
 
-    //console.log(props);
-    if(props.guest.status === "ready"){
+    
+    if(props.guest.status === "ready" && isDone !== true){
         color = "#4be44b";
         status = 0; 
         //props.updateWaitedTime(props.guest.index);
         
-    }else if(props.guest.status === "inProgress"){
+    }else if(props.guest.status === "inProgress" && isDone !== true){
         color = "yellow";
         status = 1; 
     }else {
@@ -42,9 +43,6 @@ const GuestListRow = (props) => {
         props.updateCheckedBox(event.target.name, event.target.checked, props.guest.index); 
 
     }
-    
-    let isDone = props.guest.isDone;
-    let insolesOnly = props.guest.insolesOnly;
 
     return(
         <tr>
@@ -59,12 +57,12 @@ const GuestListRow = (props) => {
 
             <td> 
                 <div className="checkBtn">
-                    <input type="checkbox" name="insolesOnly" onChange={handleChecked} checked={insolesOnly}/>               
+                    <input type="checkbox" name="insolesOnly" onChange={handleChecked} checked={props.guest.insolesOnly}/>               
                 </div>
             </td>
             <td> 
                 <div className="checkBtn">
-                    <input type="checkBox" name="isDone" onChange={handleChecked} checked={isDone}/>               
+                    <input type="checkBox" name="isDone" onChange={handleChecked} checked={props.guest.isDone}/>               
                 </div>
             </td>
             <td style={{textAlign: "center"}}>                                                
