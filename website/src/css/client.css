@@ -234,6 +234,16 @@
     -webkit-transform: rotate(45deg);
 }
 
+.left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
 i {
     border: solid black;
     border-width: 0 3px 3px 0;
@@ -293,10 +303,11 @@ i {
     height: 10%;
     overflow-y: scroll;
     /* text-overflow: ellipsis; */
+    padding: 10px
 }
 
 .guestList td,th{
-   padding: 5px; 
+   /* padding: 5px;  */
 }
 
 /* .guestList  tr:nth-child(even)  {

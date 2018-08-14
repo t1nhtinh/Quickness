@@ -3,7 +3,7 @@ import ResourceList from './ResourceList';
 import WaitedTime from './WaitedTime';
 
 const GuestListRow = (props) => {
-//    console.log(props);
+    //console.log(props);
     let status = 0; 
     let color = "";
     //let waitedTime = props.guest.waitedTime; 
@@ -38,7 +38,14 @@ const GuestListRow = (props) => {
         props.updateNumInLine(); 
     }
 
+    let handleChecked = (event) => {
+        props.updateCheckedBox(event.target.name, event.target.checked, props.guest.index); 
+
+    }
     
+    let isDone = props.guest.isDone;
+    let insolesOnly = props.guest.insolesOnly;
+
     return(
         <tr>
             {/* <td> {props.guest.index} </td> */}
@@ -48,16 +55,16 @@ const GuestListRow = (props) => {
             {/* <td> {props.guest.waitedTime}<small>min </small> </td> */}
             <WaitedTime guest={props.guest} updateWaitedTime={props.updateWaitedTime} index={props.guest.index}/>
             <td> {props.guest.quoted} <small>min</small></td>
-            <ResourceList providers={props.providers}/>
+            <ResourceList providers={props.providers}  index={props.guest.index} provider={props.guest.provider} setProvider={props.setProvider}/>
 
             <td> 
                 <div className="checkBtn">
-                    <input type="checkBox"/>               
+                    <input type="checkbox" name="insolesOnly" onChange={handleChecked} checked={insolesOnly}/>               
                 </div>
             </td>
             <td> 
                 <div className="checkBtn">
-                    <input type="checkBox"/>               
+                    <input type="checkBox" name="isDone" onChange={handleChecked} checked={isDone}/>               
                 </div>
             </td>
             <td style={{textAlign: "center"}}>                                                

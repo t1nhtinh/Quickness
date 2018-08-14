@@ -32,6 +32,7 @@ class ClientPage extends React.Component {
           empty: true,
           providerType: "Employees",
           numInLine:0,
+
           numOfGuests: 0,
           numOfProviders: 0, 
           openProviders: 0, //array of integers
@@ -53,9 +54,11 @@ class ClientPage extends React.Component {
         this.getProviderName = this.getProviderName.bind(this);
         this.getProviderId = this.getProviderId.bind(this);
         this.handleNumOfProviders = this.handleNumOfProviders.bind(this);
-        this.handleProcessTime = this.handleProcessTime.bind(this);
 
+
+        this.handleProcessTime = this.handleProcessTime.bind(this);
         this.updateWaitTime = this.updateWaitTime.bind(this);
+
         this.updateWaitedTime = this.updateWaitedTime.bind(this);
         this.getDate = this.getDate.bind(this); //helper method
         this.updateNumberOfOpenProviders = this.updateNumberOfOpenProviders.bind(this);
@@ -64,6 +67,9 @@ class ClientPage extends React.Component {
         
         this.moveGuest = this.moveGuest.bind(this);
         this.setStatus = this.setStatus.bind(this); 
+        this.setProvider = this.setProvider.bind(this);
+        this.updateCheckedBox = this.updateCheckedBox.bind(this);
+
         this.showContent = this.showContent.bind(this);
         this.updateNumInLine = this.updateNumInLine.bind(this);
     }
@@ -80,7 +86,7 @@ class ClientPage extends React.Component {
     //startTime = finishTime; 
     //check if    
     if(this.state.name){
-      newGuests = [ ...newGuests, {name: this.state.name, number: this.state.number, index: numOfGuests, status: 'ready', quoted: waitTime, startTime: startTime, waitedTime: 0 } ];
+      newGuests = [ ...newGuests, {name: this.state.name, number: this.state.number, index: numOfGuests, status: 'ready', quoted: waitTime, startTime: startTime, waitedTime: 0, provider:"default" } ];
       console.log(newGuests);
        
       empty = false; 
@@ -139,11 +145,39 @@ class ClientPage extends React.Component {
       status = "done";
     }
     guests[index].status = status; 
+    
     this.setState({
       guests: guests
     });
   }
+
+  setProvider(providerName, index){
+    let guests = this.state.guests;
+
+    guests[index].provider = providerName;
+
+    this.setState({
+      guests: guests
+    });
+
+    console.log("guests: ", guests);
+  }
   
+  updateCheckedBox(name, value, index){
+    let guests = this.state.guests;
+
+    if(name === "insolesOnly"){
+      guests[index].insolesOnly = value;
+    }else if (name == "isDone"){
+      guests[index].isDone = value;
+    }
+
+    console.log("guest",guests[index] );
+    this.setState({
+      guests: guests
+    });
+  }
+
   //Method to get name of guests at any instance
   getName(event){
     this.setState({
@@ -197,20 +231,20 @@ class ClientPage extends React.Component {
     this.setState({ 
       numOfProviders: event.target.value 
     });  
-   console.log(this.state.numOfProviders);
+    console.log("Number of employess...", this.state.numOfProviders);
    
    this.updateNumberOfOpenProviders(); //TODO: REMOVE after persisting data
   }
 
   //Function to get the number of providers that are open
   updateNumberOfOpenProviders(){
-    let numOfProv = this.state.numOfProviders; 
+    let providers = this.state.providers; 
     let index = 0; 
     let numOfOpenProv = 0;
 
     //iterate through all the providers
-    if(numOfProv){
-      for(index = 0; index <= numOfProv; index++){
+    if(providers.length){
+      for(index = 0; index < providers.length; index++){
         if(this.state.providers[index].status === "open"){
           numOfOpenProv++; 
         }
@@ -257,17 +291,18 @@ class ClientPage extends React.Component {
     let providers = this.state.providers;
     let processTime = this.state.processTime;
 
-    if(processTime < 5) {return; }
+    //  if(processTime < 5) {return; }
     //update the number of open Providers
     //this.updateNumberOfOpenProviders(); 
     let numOfOpenProv = this.state.openProviders; 
     let numInLine = this.state.numInLine;
     let i = 0; 
-    console.log(numOfOpenProv, "num of open Providers");
-    console.log(numInLine, "num inLine");
-    console.log(processTime, "The process Time");
+    // console.log(numOfOpenProv, "num of open Providers");
+    // console.log(numInLine, "num inLine");
+    // console.log(processTime, "The process Time");
+
     //Check whether the number of guests inLine is greater than the number of open providers
-    if(numInLine >= numOfOpenProv){    
+    if(numInLine >= numOfOpenProv && numOfOpenProv > 0){    
       //iterate through the providers who are InProgress and calculate estimate finish time
       //this.calcFinishTime(providers, processTime); 
       //let estimatedFinishTimes = this.state.estimatedFinishTimes; //estimated times are stored in descending order  
@@ -308,7 +343,7 @@ class ClientPage extends React.Component {
       });  
 
       waitedTime = waitedTime.getMinutes();
-      console.log("waited time is ", waitedTime);
+     //console.log("waited time is ", waitedTime);
     }
     
     
@@ -438,8 +473,8 @@ class ClientPage extends React.Component {
               <div className="dropbtn" onClick={this.showContent}>Settings </div> 
               
               <div className="dropdown-content" style={{display: this.state.settingDisplay}}>
-                <div className="setting-column"> # of {this.state.providerType}: {this.state.openProviders}
-                  <input type="number" value={this.state.numOfProviders} onChange={this.handleNumOfProviders}/>
+                <div className="setting-column"> <button type="number" value={this.state.numOfProviders} onClick={this.updateNumberOfOpenProviders}>Set</button> # of {this.state.providerType}: {this.state.openProviders}
+                  
 
                   <br></br>
                   <input type="text" placeHolder="type name " onChange={this.getProviderName} value={this.state.providerName} />
@@ -456,8 +491,8 @@ class ClientPage extends React.Component {
             
            <div className="analytic-cont">
             {/* <div className="wait-container" onClick={this.updateWaitTime}> Wait Time: {this.state.waitTime} </div> */}
-            <WaitTime update={this.updateWaitTime} waitTime={this.state.waitTime} proccessTime={this.state.processTime}/>
-            <div className="wait-container inline-cont">In-Line: {this.state.numInLine}</div>
+              <WaitTime update={this.updateWaitTime} waitTime={this.state.waitTime} proccessTime={this.state.processTime}/>
+              <div className="wait-container inline-cont">In-Line: {this.state.numInLine}</div>
             </div>
           </div>
         </div>
@@ -465,15 +500,17 @@ class ClientPage extends React.Component {
           <div className="newRow">
             <table className="newRow">
               <tr>
-                <th><input type="text" placeHolder="type name..." onChange={this.getName} value={this.state.name}/></th>
-                <th><input type="tel" placeHolder="type number..." onChange={this.getNumber} value={this.state.number}/></th>
+                <th style={{padding: "5px"}}><input type="text" placeHolder="type name..." onChange={this.getName} value={this.state.name}/></th>
+                <th style={{padding: "5px"}}><input type="tel" placeHolder="type number..." onChange={this.getNumber} value={this.state.number}/></th>
                 <th><div className="addBtn" onClick={this.addGuest}>+</div></th>
               </tr>
             </table>
           </div>
         </div>
         <div className="bottomRow">
-          <GuestList guests={this.state.guests} isEmpty={this.state.empty} providers={this.state.providers} onMove={this.moveGuest} setStatus={this.setStatus} updateNumInLine={this.updateNumInLine} updateWaitedTime={this.updateWaitedTime}/>
+          <GuestList guests={this.state.guests} isEmpty={this.state.empty} providers={this.state.providers} 
+          onMove={this.moveGuest} setStatus={this.setStatus} setProvider={this.setProvider} updateNumInLine={this.updateNumInLine} 
+          updateWaitedTime={this.updateWaitedTime} updateCheckedBox={this.updateCheckedBox}/>
         </div>
       </div>
     );

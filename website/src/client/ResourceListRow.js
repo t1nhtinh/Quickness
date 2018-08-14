@@ -3,7 +3,7 @@ import React from 'react';
 const ResourceListRow = (props) => {
         //console.log(props.provider.name);
         return(
-            <option>{props.provider.name}</option>                           
+            <option value={props.provider.name}>{props.provider.name}</option>                           
         );
 
 };

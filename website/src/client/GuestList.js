@@ -4,7 +4,7 @@ import GuestListRow from './GuestListRow';
 
 
 const GuestList = (props) => {
-    //console.log(props);
+    // console.log(props);
    
     let empty = props.isEmpty; //check if table is empty
 
@@ -25,11 +25,15 @@ const GuestList = (props) => {
                         
                         <th style={{width: "10%", textAlign: "center"}}> Insoles Only </th>
                         <th style={{width: "5%", textAlign: "center"}}> Done </th>
-                        <th style={{width: "5%", textAlign: "center" }}></th>
+                        <th style={{width: "5%", textAlign: "center" }}>
+                            <div className="optBtn" > <i className="left"></i> </div> 
+                            1 
+                            <div className="optBtn" > <i className="right"></i> </div>     
+                        </th>
                     </tr>
                 </thead>
                 <tbody>                   
-                      {empty ? null : props.guests.map((guest, i) => <GuestListRow key={i} guest={guest} providers={props.providers} onMove={props.onMove} setStatus={props.setStatus} updateNumInLine={props.updateNumInLine} updateWaitedTime={props.updateWaitedTime}/>)}                
+                      {empty ? null : props.guests.map((guest, i) => <GuestListRow key={i} guest={guest} providers={props.providers} onMove={props.onMove} setStatus={props.setStatus} setProvider={props.setProvider} updateNumInLine={props.updateNumInLine} updateWaitedTime={props.updateWaitedTime} updateCheckedBox={props.updateCheckedBox}/>)}                
                 </tbody>
             </table>
         </div>
