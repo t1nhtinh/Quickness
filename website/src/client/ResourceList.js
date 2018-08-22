@@ -12,8 +12,8 @@ const ResourceList = (props) => {
 
         return(
             <td>
-                <form onChange={updateProvider}>
-                    <select value={selected}>
+                <form style={{widht: "auto"}}>
+                    <select style={{widht: "10%", overflow: "hidden"}} value={selected} onChange={updateProvider}>
                         <option value="default"> Select...</option>
                         {props.providers.map((provider, i) => <ResourceListRow key={i} provider={provider}/>) }
                     </select>

@@ -3,13 +3,11 @@ import React from 'react';
 class WaitTime extends React.Component {
     constructor(props) {
       super(props);
-      this.state = { seconds: 0 };
+      this.state = { };
     }
 
-
-
     componentDidMount() {
-      this.interval = setInterval(() => this.props.update(), 3000);
+      this.interval = setInterval(() => this.props.updateWaitTime(), 5000);
     }
 
     componentWillUnmount() {
@@ -26,5 +24,3 @@ class WaitTime extends React.Component {
   }
 
   export default WaitTime;
-
-// ReactDOM.render(<WaitTime />, mountNode);

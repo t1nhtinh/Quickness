@@ -1,50 +1,86 @@
 import React from 'react';
-import GuestList from './GuestList';
-import '../css/client.css';
 import {Link} from 'react-router-dom';
-import WaitTime from './WaitTime'
-//TODO: implement breaks when provider is idle
-let employees = [
-  {
-    name: "Tinh Dang", 
-    id: 1, 
-    status: "open" 
-  }, 
-  {
-    name: "De Tran", 
-    id: 2,
-    status: "open" 
-  }, 
-  {
-    name: "Quickness", 
-    id: 3,
-    status: "open" 
-  }
-];
+import '../css/client.css';
+import fire from './../fire';
+import GuestList from './GuestList';
+import ProviderList from './ProviderList';
+
+import WaitTime from './WaitTime';
+
+
+// //TODO: implement breaks when provider is idle
+// let employees = [
+//   {
+//     name: "Tinh Dang", 
+//     id: 1, 
+//     status: "open" 
+//   }, 
+//   {
+//     name: "De Tran", 
+//     id: 2,
+//     status: "open" 
+//   }, 
+//   {
+//     name: "Quickness", 
+//     id: 3,
+//     status: "open" 
+//   }
+// ];
 
 
 class ClientPage extends React.Component { 
      constructor(props,context) {
         super(props,context);
+        let date = this.getDate();
+       
         this.state = {
-          guests: [], 
-          providers: employees, //set dummy employees TODO: sorted by alphabet
+          date: date,
+          // guests: [], 
+          //providers: employees, //set dummy employees TODO: sorted by alphabet
           empty: true,
+          showPopup: false, 
           providerType: "Employees",
           numInLine:0,
 
           numOfGuests: 0,
+          number: "",
+
           numOfProviders: 0, 
           openProviders: 0, //array of integers
           idleProviders:[], //array of integers
           inProgressProviders:[], //array of integers
+          providerId: "",
+          
           processTime: 0, 
           waitTime: 0, 
           waitTimes: [],
           minStartTime: 0,
           estimatedFinishTimes: [], 
-          settingDisplay: "none"
+          
+          showDefault: "block",
+          showProviders: "none",
+          showDisplay: "none",
+          settingDisplay: "none",
+          page: 1,
+          maxRows: 15
+
+  
         }
+
+        this.getDate = this.getDate.bind(this); //helper method
+        
+        this.initProviders = this.initProviders.bind(this);
+        this.initGuests = this.initGuests.bind(this);
+        this.initSettings = this.initSettings.bind(this);
+
+        this.writeProviderData = this.writeProviderData.bind(this);
+        this.writeGuestData = this.writeGuestData.bind(this);
+        this.writeSettingData = this.writeSettingData.bind(this);
+        
+        this.updateGuestData = this.updateGuestData.bind(this);
+        this.updateProviderData = this.updateProviderData.bind(this);
+        this.updateSettingData = this.updateSettingData.bind(this);
+
 
         this.addGuest = this.addGuest.bind(this);
         this.getName = this.getName.bind(this);
@@ -58,10 +94,11 @@ class ClientPage extends React.Component {
 
         this.handleProcessTime = this.handleProcessTime.bind(this);
         this.updateWaitTime = this.updateWaitTime.bind(this);
+        this.updateNumInLine = this.updateNumInLine.bind(this);
 
         this.updateWaitedTime = this.updateWaitedTime.bind(this);
-        this.getDate = this.getDate.bind(this); //helper method
-        this.updateNumberOfOpenProviders = this.updateNumberOfOpenProviders.bind(this);
+        this.updateNumOfOpenProv = this.updateNumOfOpenProv.bind(this);
+        
         this.calcFinishTime = this.calcFinishTime.bind(this);
         this.calcWaitTime = this.calcWaitTime.bind(this);
         
@@ -69,39 +106,220 @@ class ClientPage extends React.Component {
         this.setStatus = this.setStatus.bind(this); 
         this.setProvider = this.setProvider.bind(this);
         this.updateCheckedBox = this.updateCheckedBox.bind(this);
-
+        
+        this.turnPage = this.turnPage.bind(this);
         this.showContent = this.showContent.bind(this);
-        this.updateNumInLine = this.updateNumInLine.bind(this);
+        this.togglePopup = this.togglePopup.bind(this);
+        
+
     }
 
-  addGuest(){
-   //this.updateNumberOfOpenProviders(); 
-    let newGuests = this.state.guests;
-    let empty = this.state.empty; 
-    let numOfGuests = this.state.numOfGuests; 
-    let numInLine = this.state.numInLine;
-    let waitTime = this.state.waitTime;
-    let startTime = new Date();
-    //let finishTime = startTime + 1000; 
-    //startTime = finishTime; 
-    //check if    
-    if(this.state.name){
-      newGuests = [ ...newGuests, {name: this.state.name, number: this.state.number, index: numOfGuests, status: 'ready', quoted: waitTime, startTime: startTime, waitedTime: 0, provider:"default" } ];
-      console.log(newGuests);
-       
-      empty = false; 
-      numOfGuests++; 
-      numInLine++; 
+  
+    componentWillMount(){     
+      // for(var i = 0; i < employees.length; i++){
+      //   var newKey = fire.database().ref().child("providers").push().key;
+      //   this.writeProviderData("providers", newKey, employees[i].name, i+1, "open");
+      // }    
     }
-    this.setState({
-        guests: newGuests,
-        numOfGuests: numOfGuests,
-        name: '', 
-        number: '', 
-        empty: empty,
-        numInLine: numInLine,      
-    });
-  }
+
+    componentDidMount(){
+      this.initProviders();
+      this.initGuests();
+      this.initSettings();
+      
+    }
+
+    componentWillUnmount(){
+
+    }
+
+    componentWillUpdate(){
+
+    }
+
+    componentWillReceiveProps(){
+
+    }
+
+    componentDidUpdate(){
+ 
+    }
+
+    //Note: current time is always greater than the starting time in this app
+    getDate(){
+      let date = new Date(); 
+      let year = date.getFullYear(); 
+      let month = date.getMonth()+ 1; 
+      let day = date.getDate(); 
+
+      return month + "-" + day + "-" + year;
+    }
+
+    //Initialize the providers 
+    //sort the providers by name and store
+    //create keys and store them in openProviderList 
+    //This should call from an API
+    initProviders(){
+      let providerRef = fire.database().ref('providers').orderByKey().limitToLast(20);
+      
+      providerRef.on('value', snapshot => {
+        /* Update React state when providers is added at Firebase Database */
+        let providers = [];
+        snapshot.forEach((snap) => {               
+          if(snap.val()){
+            providers.push(snap.val());
+          } 
+        })      
+
+        let openProviders = this.updateNumOfOpenProv(providers);
+
+        this.setState({ 
+          providers: providers,
+          numOfProviders: providers.length,
+          openProviders: openProviders
+        });
+      
+      })
+    }
+
+    initGuests(){
+      let guestRef = fire.database().ref( this.getDate() + "/" + "guests");
+      var empty = true; 
+
+      guestRef.on('value', snapshot => {
+        /* Update React state when guests is added at Firebase Database */        
+        let guests = [];       
+        snapshot.forEach((snap) => {               
+          if(snap.val()){
+            guests.push(snap.val());
+            empty = false;
+          } 
+        })                 
+        
+        let numInLine = this.updateNumInLine(guests); 
+
+        this.setState({ 
+          guests: guests,
+          empty: empty,
+          numOfGuests: guests.length,
+          numInLine: numInLine
+        }); 
+      })
+    }
+
+
+    initSettings(){
+      let settingRef = fire.database().ref( this.getDate() + "/" + "settings");
+      settingRef.on('value', snapshot => {
+        /* Update React state when settings is added at Firebase Database */
+        snapshot.forEach((snap) => {               
+          if(snap.val()){
+            var key = snap.key;
+            var val = snap.val();
+   
+            this.setState({ 
+              [key]: val
+            });   
+          } 
+        })     
+      })
+    }
+    
+    //Write data to the database
+    writeProviderData( userType, key, name, id, status) {
+      fire.database().ref( userType + '/' + key).set({
+        key: key, 
+        name: name,
+        id : id, 
+        status: status 
+      });
+    }
+
+    //Write guest data to the database
+    writeGuestData( date, key, name, number, index, status, quotedTime, startTime, waitedTime, provider) {
+      fire.database().ref( date + '/' + 'guests' + '/' + key).set({
+        key: key,
+        name: name, 
+        number: number, 
+        index: index, 
+        status: status, 
+        quoted: quotedTime, 
+        startTime: startTime, 
+        waitedTime: waitedTime, 
+        provider: provider
+      });
+    }
+
+    writeSettingData(date, key, value){
+      let settingRef = fire.database().ref( date + '/' + 'settings' + '/');
+      
+      settingRef.set({
+        [key]: value
+      });
+    }
+
+    updateGuestData(guestKey, key, value, index){
+      let guestRef = fire.database().ref( this.state.date + '/' + 'guests' + '/' + guestKey);
+      guestRef.update({
+        [key]: value
+      });
+    }
+
+    updateProviderData(){
+
+    }
+
+    updateSettingData(){
+
+    }
+
+    addGuest(){
+      let newGuests = this.state.guests;
+      let empty = this.state.empty; 
+      let numOfGuests = this.state.numOfGuests; 
+      let numInLine = this.state.numInLine;
+      let waitTime = this.state.waitTime;
+      let startTime = new Date().toString();
+      let page = this.state.page;
+      let maxRows = this.state.maxRows; 
+
+      //check if name exists   
+      if(this.state.name){
+        var newKey = fire.database().ref().child(this.state.date + "/" + "guests").push().key;
+
+        let guest = {name: this.state.name, key: newKey, number: this.state.number, 
+          index: numOfGuests, status: 'ready', quoted: waitTime, 
+          startTime: startTime, waitedTime: 0, provider:"default" }
+
+        if(newGuests){
+          newGuests = [ ...newGuests, guest];
+        }
+        else{
+          newGuests = [guest]
+        }
+                      
+        this.writeGuestData(this.state.date, newKey, this.state.name, this.state.number, 
+          numOfGuests, 'ready', waitTime, startTime, 0, "default" );
+ 
+        empty = false; 
+        numOfGuests++; //total number of guests
+        numInLine++; //number of people waiting so far
+
+        if((numOfGuests)  % maxRows == 1){
+          this.turnPage(1); 
+        }
+      }
+
+      this.setState({
+          guests: newGuests,
+          numOfGuests: numOfGuests,
+          name: '', 
+          number: '', 
+          empty: empty,
+          numInLine: numInLine,   
+      });   
+    }
+  
   
   //Method to move position of guest 1 up or down 
   moveGuest(dir, index){
@@ -109,30 +327,55 @@ class ClientPage extends React.Component {
     if(guests.length < 1) return; 
     
     let tempGuest = guests[index];
-  
+    var newIndex;  
+
     if(dir){//move up if true
       if(index < 1){ return; }
-      let guest = guests[index - 1]; 
+
+      newIndex = index - 1; 
+      let guest = guests[newIndex]; 
       guests[index] = guest; 
-      guests[index - 1] = tempGuest; 
+      guests[newIndex] = tempGuest; 
 
       guests[index].index = index; 
-      guests[index - 1].index = index - 1; 
+      guests[newIndex].index = newIndex; 
     }
     else{ //move down
       if(index >= guests.length - 1){return; }
-      let guest = guests[index + 1]; 
+      newIndex = index + 1; 
+      let guest = guests[newIndex]; 
       guests[index] = guest; 
-      guests[index + 1] = tempGuest; 
+      guests[newIndex] = tempGuest; 
 
       guests[index].index = index; 
-      guests[index + 1].index = index + 1; 
+      guests[newIndex].index = newIndex; 
     }
+    this.updateGuestData(guests[newIndex].key , "index", newIndex, newIndex);
+    this.updateGuestData(guests[index].key , "index", index, index);
+    
     this.setState({
       guests: guests 
     });
   }
 
+  turnPage(dir){
+    let page = this.state.page;
+    let maxRows = this.state.maxRows; 
+    let numOfGuests = this.state.numOfGuests;
+    let maxRow = page*maxRows; // 1*15 --> 15 
+
+    if(!dir && page > 1){ //0 means go to prevpage
+      page = page - 1
+    }
+    else if(numOfGuests >= maxRow){
+      page = page + 1; 
+    }
+    else {return;} 
+
+    this.setState({
+      page: page
+    });
+  }
   //Method to set the status of guests 
   setStatus(num, index){
     let status = "";
@@ -149,18 +392,19 @@ class ClientPage extends React.Component {
     this.setState({
       guests: guests
     });
+
+    this.updateGuestData(guests[index].key , "status", status, index);
   }
 
   setProvider(providerName, index){
     let guests = this.state.guests;
-
     guests[index].provider = providerName;
 
     this.setState({
       guests: guests
     });
 
-    console.log("guests: ", guests);
+    this.updateGuestData(guests[index].key , "provider", providerName);
   }
   
   updateCheckedBox(name, value, index){
@@ -168,11 +412,21 @@ class ClientPage extends React.Component {
 
     if(name === "insolesOnly"){
       guests[index].insolesOnly = value;
-    }else if (name == "isDone"){
+      this.updateGuestData(guests[index].key , "insolesOnly", value, index);
+    }
+    else if (name == "isDone"){
       guests[index].isDone = value;
+      
+      if(value == true){
+        guests[index].status = "done";
+        this.updateNumInLine();
+
+        this.updateGuestData(guests[index].key , "status", "done", index);
+      }
+
+      this.updateGuestData(guests[index].key , "isDone", value, index);
     }
 
-    console.log("guest",guests[index] );
     this.setState({
       guests: guests
     });
@@ -198,7 +452,11 @@ class ClientPage extends React.Component {
      
      //Check if name has been filled out
      if(this.state.providerName){
-       providers = [...providers, {name: this.state.providerName, providerId: this.state.providerId, status: "open"}];
+       providers = [...providers, {name: this.state.providerName, id: this.state.providerId, status: "open"}];
+
+       var newKey = fire.database().ref().child("providers").push().key; //create a key for new employee
+       //upload to firebase
+       this.writeProviderData("providers", newKey, this.state.providerName, this.state.providerId, "open");
      }
      
      this.setState({
@@ -215,8 +473,6 @@ class ClientPage extends React.Component {
     this.setState({
         providerName: event.target.value
     });
-
-    this.updateNumberOfOpenProviders();
   }
 
   //Method to get provider ID onChange
@@ -231,29 +487,25 @@ class ClientPage extends React.Component {
     this.setState({ 
       numOfProviders: event.target.value 
     });  
-    console.log("Number of employess...", this.state.numOfProviders);
-   
-   this.updateNumberOfOpenProviders(); //TODO: REMOVE after persisting data
   }
 
   //Function to get the number of providers that are open
-  updateNumberOfOpenProviders(){
-    let providers = this.state.providers; 
-    let index = 0; 
-    let numOfOpenProv = 0;
-
-    //iterate through all the providers
-    if(providers.length){
-      for(index = 0; index < providers.length; index++){
-        if(this.state.providers[index].status === "open"){
-          numOfOpenProv++; 
+  updateNumOfOpenProv(providers){
+    console.log("updating num of providers");
+    if(providers){
+      let index = 0; 
+      let numOfOpenProv = 0;
+      //iterate through all the providers
+      if(providers.length){
+        for(index = 0; index < providers.length; index++){
+          if(providers[index].status === "open"){
+            numOfOpenProv++; 
+          }
         }
-        console.log(this.state.providers[index]); 
       }
+      return numOfOpenProv;
     }
-    this.setState({ 
-      openProviders: numOfOpenProv
-    });
+    return 0; 
   }
   
   //update state whenever the processTime is changed
@@ -262,30 +514,32 @@ class ClientPage extends React.Component {
       processTime: event.target.value
     });  
 
-    console.log(this.state.processTime, "the process time")
+    this.writeSettingData(this.getDate(), "processTime", event.target.value);
   }
 
-  updateNumInLine(){
+  updateNumInLine(guests){
+    console.log("updating num in line");
     //iterate through guest in line
-    let guests = this.state.guests; 
-    let i = 0; 
-    let numInLine = 0; 
-    //count how many are in the ready state
-    for(i = 0; i < guests.length; i++){
-      if(guests[i].status === "ready"){
-        numInLine++; 
+    //let guests = this.state.guests; 
+    if(guests){
+      let i = 0; 
+      let numInLine = 0; 
+      //count how many are in the ready state
+      for(i = 0; i < guests.length; i++){
+        if(guests[i].status === "ready"){
+          numInLine++; 
+        }
       }
-    }
-    console.log("num in line is: ", numInLine);
-    //set state
-    this.setState({ 
-      numInLine: numInLine
-    });  
+      //set state
+      // this.setState({ 
+      //   numInLine: numInLine
+      // }); 
+      return numInLine;
+   } 
   }
 
   //Function to calculate the wait time depending on number of guests in line and number of open providers
   updateWaitTime(){  
-    
     //console.log(this.state.guests); 
     let waitTime = 0; //Initialize waitTime to zero
     let providers = this.state.providers;
@@ -307,10 +561,8 @@ class ClientPage extends React.Component {
       //this.calcFinishTime(providers, processTime); 
       //let estimatedFinishTimes = this.state.estimatedFinishTimes; //estimated times are stored in descending order  
       let estimatedFinishTimes = this.calcFinishTime(providers, processTime);
-      console.log(estimatedFinishTimes, "estimate finish times"); 
+      //console.log(estimatedFinishTimes, "estimate finish times"); 
       //calculateWaitTimes from estimated finish times
-      //this.calcWaitTime(estimatedFinishTimes);
-      //let waitTimes = this.state.waitTimes;
       var waitTimes = this.calcWaitTime(estimatedFinishTimes);
       //iterate up to the number of guest inLine
       for(i = numOfOpenProv; i <= numInLine; i++){
@@ -327,53 +579,28 @@ class ClientPage extends React.Component {
     });  
   }
 
-  //updates the waited time so far based on the current time
+  //updates the waited/quoted time so far based on the current time
   updateWaitedTime(index){
     let guests = this.state.guests;
+    
     let currTime = new Date();
     var waitedTime; 
 
     if(guests[index].status === "ready"){
-      let startTime = guests[index].startTime; 
+      let startTime = new Date(guests[index].startTime); 
       waitedTime = new Date(currTime - startTime); 
-      guests[index].waitedTime = waitedTime.getMinutes(); 
+      waitedTime = waitedTime.getMinutes();
+      guests[index].waitedTime = waitedTime; 
 
       this.setState({ 
         guests: guests
       });  
 
-      waitedTime = waitedTime.getMinutes();
-     //console.log("waited time is ", waitedTime);
+      this.updateGuestData(guests[index].key , "waitedTime", waitedTime, index);
     }
-    
-    
   }
   
-  //Note: current time is always greater than the starting time in this app
-  getDate(){
-    let date = new Date(); 
-     //get the time
-    date = date.toString(); 
-    date = new Date(date); 
-    console.log(date);
 
-    let testDate = new Date(2018, 3, 27, 18, 1); 
-    console.log(testDate);
-
-    testDate = new Date(testDate.getTime() + 60000*15); 
-
-    console.log(testDate);
-
-    let diff = date - testDate; 
-
-    console.log(diff);
-
-    let time = new Date(diff); 
-
-    time = time.getMinutes(); 
-
-    console.log(time); 
-  }
    
   //Calculate estimated finish time for each provider in progress and update the array 
   //input: 1) an array of providers
@@ -423,45 +650,58 @@ class ClientPage extends React.Component {
       let waitTime = diff.getMinutes(); 
       waitTimeList.push(waitTime);
     }
-    console.log(waitTimeList);
+    // console.log(waitTimeList);
+    
     //sort the  waitTimes in descending order
     waitTimeList.sort(function(a, b){return b - a}); 
     
     return waitTimeList; 
-    // this.setState({ 
-    //     waitTimes: waitTimes
-    //   });  
+
   }
 
   //set the settings content to display or hidden 
-  showContent(){
-    let show = this.state.settingDisplay;
-   
-    if(show === "none"){
-      show = "block";
-    } 
-    else {
-      show = "none";
+  showContent(event){
+    // if(show === "none"){
+    //   show = "block";
+    // } 
+    // else {
+    //   show = "none";
+    // }
+    let num = event.target.id;
+    var showDefault, showProviders, showDisplay; 
+
+  
+    if(num == 0){
+      showDefault = "block"; 
+      showProviders = "none";
+      showDisplay = "none"; 
+    }
+    else if( num == 1){
+      showDefault = "none"; 
+      showProviders = "block";
+      showDisplay = "none"; 
+    }
+    else if (num == 2){
+      showDefault = "none"; 
+      showProviders = "none";
+      showDisplay = "block"; 
     }
     this.setState({
-      settingDisplay: show
+      showDefault: showDefault,
+      showProviders: showProviders,
+      showDisplay: showDisplay
     });
   }
 
-  //Initialize the providers 
-  //sort the providers by name and store
-  //create keys and store them in openProviderList 
-  //This should call from an API
-  initProviders(){
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
 
+    // this.showContent();
   }
 
   render() {
-    //initialize providers
-
-    //console.log(this.state.providerType, "whattt");
-
-    //sort providers by name
 
     return (
       <div>
@@ -469,29 +709,42 @@ class ClientPage extends React.Component {
           <div className="topNav">
             <Link to="/">Home</Link>
             
-            <div className="dropdown">  
-              <div className="dropbtn" onClick={this.showContent}>Settings </div> 
-              
-              <div className="dropdown-content" style={{display: this.state.settingDisplay}}>
-                <div className="setting-column"> <button type="number" value={this.state.numOfProviders} onClick={this.updateNumberOfOpenProviders}>Set</button> # of {this.state.providerType}: {this.state.openProviders}
+            {/* <div className="dropdown">   */}
+              <a onClick={this.togglePopup}>Settings </a> 
+             { this.state.showPopup ?
+                <div className="popup">
+
+                  <div class="tab">
+                    <button class="tablinks" onClick={this.showContent} id="0">Default</button>
+                    <button class="tablinks" onClick={this.showContent} id="1">Employees</button>
+                    <button class="tablinks" onClick={this.showContent} id="2">Display</button>
+                  </div>
+
+                  <div class="tabcontent" style={{display: this.state.showDefault}}>
+                    Process Time: {this.state.processTime}
+                    <p><input type="number" value={this.state.processTime} onChange={this.handleProcessTime}/></p>
+                    <p><button>Save</button> <button onClick={this.togglePopup}> Close </button></p>
+                  </div>
+
+                  <div class="tabcontent" style={{display: this.state.showProviders}}>                   
+                    <h3> # of {this.state.providerType}: {this.state.openProviders} </h3>
+                    <input type="text" placeholder="type name " onChange={this.getProviderName} value={this.state.providerName} />
+                    <input type="text" placeholder="type employee id " onChange={this.getProviderId} value={this.state.providerId}/>
+                    <button onClick={this.addProvider}>+</button>
+                    <br></br>
+                    <br></br>
+                    <ProviderList providers={this.state.providers} isEmpty={this.state.empty}/>
+                    
+                    
+                    <p><button>Save</button> <button onClick={this.togglePopup}> Close </button></p>              
+                  </div>
                   
-
-                  <br></br>
-                  <input type="text" placeHolder="type name " onChange={this.getProviderName} value={this.state.providerName} />
-                  <input type="text" placeHolder="type employee id " onChange={this.getProviderId} value={this.state.providerId}/>
-                  <button className="addBtn" onClick={this.addProvider}>+</button>
-
-                </div>                
-                
-                <div className="setting-column"> Process Time: 
-                  <input type="number" value={this.state.processTime} onChange={this.handleProcessTime}/>
                 </div>
-              </div>
-            </div>
+            : null}
+            {/* </div> */}
             
            <div className="analytic-cont">
-            {/* <div className="wait-container" onClick={this.updateWaitTime}> Wait Time: {this.state.waitTime} </div> */}
-              <WaitTime update={this.updateWaitTime} waitTime={this.state.waitTime} proccessTime={this.state.processTime}/>
+              <WaitTime updateWaitTime={this.updateWaitTime} waitTime={this.state.waitTime} />      
               <div className="wait-container inline-cont">In-Line: {this.state.numInLine}</div>
             </div>
           </div>
@@ -499,18 +752,21 @@ class ClientPage extends React.Component {
         <div className="middleRow">
           <div className="newRow">
             <table className="newRow">
-              <tr>
-                <th style={{padding: "5px"}}><input type="text" placeHolder="type name..." onChange={this.getName} value={this.state.name}/></th>
-                <th style={{padding: "5px"}}><input type="tel" placeHolder="type number..." onChange={this.getNumber} value={this.state.number}/></th>
-                <th><div className="addBtn" onClick={this.addGuest}>+</div></th>
-              </tr>
+              <thead>
+                <tr>
+                  <th style={{padding: "5px"}}><input type="text" placeholder="type name..." onChange={this.getName} value={this.state.name}/></th>
+                  <th style={{padding: "5px"}}><input type="tel" placeholder="type number..." onChange={this.getNumber} value={this.state.number}/></th>
+                  <th><div className="addBtn" onClick={this.addGuest}>+</div></th>
+                </tr>
+              </thead>
             </table>
           </div>
         </div>
         <div className="bottomRow">
           <GuestList guests={this.state.guests} isEmpty={this.state.empty} providers={this.state.providers} 
           onMove={this.moveGuest} setStatus={this.setStatus} setProvider={this.setProvider} updateNumInLine={this.updateNumInLine} 
-          updateWaitedTime={this.updateWaitedTime} updateCheckedBox={this.updateCheckedBox}/>
+          updateWaitedTime={this.updateWaitedTime} updateCheckedBox={this.updateCheckedBox} page={this.state.page} 
+          maxRows={this.state.maxRows} turnPage={this.turnPage}/>
         </div>
       </div>
     );
