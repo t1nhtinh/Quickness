@@ -18,14 +18,16 @@ const ProviderList = (props) => {
                 <thead>
                     <tr>
                         <th style={{width: "10%", textAlign: "center"}}>Status</th>
-                        <th style={{width: "20%"}}>Name</th>
-                        <th style={{width: "20%"}}>ID</th>
-                        <th style={{width: "10%"}}>Active</th>
-                        <th style={{width: "10%"}}>Sold</th>
+                        <th style={{width: "20%"}}>Name </th>
+                        <th style={{width: "20%"}}>EmployeeID</th>
+                        <th className="mobile-col" >Visits</th>
+                        <th className="mobile-col" >Sold</th>
+                        <th style={{width: "10%"}}>%</th>
                     </tr>
                 </thead>               
                 <tbody>                   
-                      {empty ? null : props.providers.map((provider, i) => <ProviderListRow key={i} provider={provider} />)}                
+                      {empty ? null : props.providers.map((provider, i) => <ProviderListRow key={i} provider={provider} 
+                        showDetailProv={props.showDetailProv} setProvStatus={props.setProvStatus} handleSold={props.handleSold}/>)}                
                 </tbody>
             </table>
             

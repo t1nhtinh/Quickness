@@ -56,17 +56,24 @@ const GuestListRow = (props) => {
         isShow = "table-row";
     }
 
+
+    let showDetail = () => {
+        props.showDetail(index); 
+    }
+
     return(
         <tr style={{display: isShow}}>
             {/* <td> {props.guest.index} </td> */}
             <td> <div style={{backgroundColor: color}} className="statusBtn" onClick={ !isDone ? setStatus: null}></div> </td>
-            <td> <small>{props.guest.index + 1}.</small> {props.guest.name} </td>
-            {/* <td> {props.guest.index} </td> */}
-            {/* <td> {props.guest.waitedTime}<small>min </small> </td> */}
+            <td> 
+                <small>{props.guest.index + 1}.</small> {props.guest.name} 
+                <strong className="detailBtn" style={{float: "right"}} onClick={showDetail}>&#8690;</strong>               
+            </td>
             <WaitedTime guest={props.guest} updateWaitedTime={props.updateWaitedTime} index={index}/>
             <td> {props.guest.quoted} <small>min</small></td>
-            <ResourceList providers={props.providers}  index={props.guest.index} provider={props.guest.provider} setProvider={props.setProvider}/>
-
+            <td>
+                <ResourceList providers={props.providers}  index={props.guest.index} provider={props.guest.provider} setProvider={props.setProvider}/>
+            </td>
             <td> 
                 <div className="checkBtn">
                     <input type="checkbox" name="insolesOnly" onChange={handleChecked} checked={props.guest.insolesOnly}/>               
@@ -77,10 +84,12 @@ const GuestListRow = (props) => {
                     <input type="checkBox" name="isDone" onChange={handleChecked} checked={props.guest.isDone}/>               
                 </div>
             </td>
-            <td style={{textAlign: "center"}}>                                                
+            <td style={{textAlign: "center"}}>
+                                                      
                 <div className="optBtn" onClick={moveUp}> <i className="up"></i> </div>  
                 <div className="optBtn" onClick={moveDown}> <i className="down"></i> </div>                                          
             </td>
+           
             {/* <td> <div style={{backgroundColor: color}} className="checkBtn" onClick={setStatus}></div> </td> */}
         </tr>
                         

@@ -4,11 +4,15 @@ class WaitedTime extends React.Component {
     constructor(props) {
       super(props);
       this.state = { seconds: 0 };
+
+      this.color = "black"; 
+     
     }
 
 
     componentDidMount() {
       this.interval = setInterval(() => this.props.updateWaitedTime(this.props.guest.index), 60000);
+      
     }
 
     componentWillUnmount() {
@@ -16,11 +20,12 @@ class WaitedTime extends React.Component {
     }
 
     render() {
-        //console.log(this.props);
-        //console.log("time: ", this.state.seconds )
+      if(this.props.guest.waitedTime > this.props.guest.quoted){
+        this.color = "red"; 
+      }
+  
       return (
-        // <div className="wait-container" onClick={this.props.update}> Wait Time: {this.props.waitTime} </div>
-        <td>{this.props.guest.waitedTime} <small>min</small> </td>
+        <td style={{color: this.color}}>{this.props.guest.waitedTime} <small>min</small> </td>
       );
     }
   }
